@@ -23,6 +23,8 @@ $user = $_SESSION['user'];
             <li><a href="see_message.php">See Message</a></li>
             <li><a href="request_leave.php">Request Leave</a></li>
             <li><a href="view_leaves.php">See Leaves</a></li>
+            <li><a href="view_user_details.php">User Details</a></li>
+            <li><a href="update_profile.php">update profile</a></li>
             
 </ul>
 
