@@ -26,6 +26,8 @@ $admin = $_SESSION['user'];
     <li><a href="user_registration.php">Users Registration</a></li>
     <li><a href="send-message.php">Send Message</a></li>
     <li><a href="manage_leaves.php">Manage Leaves</a></li>
+    <li><a href="user_delete.php">Remove Users</a></li>
+    <li><a href="User_details.php">User Details</a></li>
 </ul>
 
 <div class="top-bar">

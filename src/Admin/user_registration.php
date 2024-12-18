@@ -44,9 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['ac
 
 <ul>
     <li><a href="admin_dashboard.php">Dashboard</a></li>
-    <li><a class="active" href="user_registration.php">Manage Users</a></li>
+    <li><a class="active" href="user_registration.php">Users Registration</a></li>
     <li><a href="send-message.php">Send Message</a></li>
-    <li><a href="manage_leaves.php">Leave Requests</a></li>
+    <li><a href="manage_leaves.php">Manage Leaves</a></li>
+    <li><a href="user_delete.php">Remove Users</a></li>
+    <li><a href="User_details.php">User Details</a></li>
 </ul>
 
 <div class="top-bar">
