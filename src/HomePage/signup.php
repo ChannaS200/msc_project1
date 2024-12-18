@@ -8,14 +8,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = $_POST['address'];
     $email = $_POST['email'];
     $mobile = $_POST['mobile'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
 
-    $stmt = $pdo->prepare("INSERT INTO users (name, emp_no, address, email, mobile, password, role, status) 
-                           VALUES (?, ?, ?, ?, ?, ?, 'user', 'pending')");
-    if ($stmt->execute([$name, $emp_no, $address, $email, $mobile, $password])) {
-        $message = "Registration successful! Wait for admin approval.";
+    // Validate if passwords match
+    if ($password === $confirm_password) {
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+        $stmt = $pdo->prepare("INSERT INTO users (name, emp_no, address, email, mobile, password, role, status) 
+                               VALUES (?, ?, ?, ?, ?, ?, 'user', 'pending')");
+        if ($stmt->execute([$name, $emp_no, $address, $email, $mobile, $hashed_password])) {
+            $message = "Registration successful! Wait for admin approval.";
+        } else {
+            $message = "Registration failed!";
+        }
     } else {
-        $message = "Registration failed!";
+        $message = "Passwords do not match!";
     }
 }
 ?>
@@ -44,7 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" id="mobile" name="mobile" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
             <button type="submit">Sign Up</button>
+            <br>
+            <br>
+            <a href="login.php">login</a>
         </form>
     </div>
 </body>
