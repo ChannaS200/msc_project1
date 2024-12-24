@@ -1,0 +1,58 @@
+please use messaging_system.sql file  
+
+1.create manual database in 
+http://localhost/phpmyadmin/index.php?route=/server/databases&server=1
+name as messaging_system.
+
+2.import this sql file to 
+http://localhost/phpmyadmin/index.php?route=/database/import&db=messaging_system
+
+This project run in localhost.
+
+please locate this folder inside the www in wamp or htdocs in xamp.
+
+to start
+http://localhost/msc_project_GSCOMP207/src/HomePage/
+
+admin is already register.
+user name - admin@example.com
+password - password
+
+one user I registered.
+user name - abc@gmail.com
+password - abc
+
+guid line
+1.signup
+2.register using fill with your data(abcd)
+3.logout
+4.login as admin
+5.go to User Registration tab
+6.accept
+7.logout
+8.login as you using username and password(given email and password)
+9.logout
+10.login as admin
+11.send message to abcd(ex -: abcd is your name)
+12.logout
+13.login as abcd
+14.move to see message and see message
+15.move to request leave tab
+16.fill form and send
+17.logout
+18.login as admin
+19.move to menage leave tab
+20.accept or reject with type message
+21.logout
+22.login as abcd
+23.see leaves tab
+24.logout
+25.login as abc
+26.update profile
+27.logout
+28.login as admin
+29.see user details tab
+30.move remove use tab
+31.delete abcd user
+32.logout.
+33.try to login as abcd
