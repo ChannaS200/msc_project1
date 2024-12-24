@@ -8,33 +8,35 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     exit();
 }
 
-
-// Fetch active users for removal
-$activeStmt = $pdo->prepare("SELECT id, name, emp_no, email, mobile FROM users WHERE status = 'approved'");
-$activeStmt->execute();
-$activeUsers = $activeStmt->fetchAll();
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['user_id'], $_POST['action'])) {
         $user_id = (int)$_POST['user_id'];
         $action = $_POST['action'];
+
         if ($action === 'remove') {
-    // Prevent deletion of the admin with Employee No 'EMP0001'
-    $empStmt = $pdo->prepare("SELECT emp_no FROM users WHERE id = ?");
-    $empStmt->execute([$user_id]);
-    $empNo = $empStmt->fetchColumn();
+            // Prevent deletion of the admin with Employee No 'EMP0001'
+            $empStmt = $pdo->prepare("SELECT emp_no FROM users WHERE id = ?");
+            $empStmt->execute([$user_id]);
+            $empNo = $empStmt->fetchColumn();
 
-    if ($empNo === 'EMP0001') {
-        $_SESSION['message'] = "Admin user cannot be removed!";
-    } else {
-        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->execute([$user_id]);
-        $_SESSION['message'] = "User removed successfully!";
+            if ($empNo === 'EMP0001') {
+                $_SESSION['message'] = "Admin user cannot be removed!";
+            } else {
+                $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+                if ($stmt->execute([$user_id])) {
+                    $_SESSION['message'] = "User removed successfully!";
+                } else {
+                    $_SESSION['message'] = "Failed to remove the user. Please try again.";
+                }
+            }
+        }
     }
 }
-    }
-}
 
+// Fetch updated list of active users
+$activeStmt = $pdo->prepare("SELECT id, name, emp_no, email, mobile FROM users WHERE status = 'approved'");
+$activeStmt->execute();
+$activeUsers = $activeStmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -42,14 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
+    <title>Remove Users</title>
     <link rel="stylesheet" href="../CSS/style3.css">
     <script>
         // JavaScript function to confirm removal
         function confirmRemoval(event, userName) {
-            event.preventDefault(); // Prevent form submission
-            if (confirm(`Are you sure you want to remove ${userName}?`)) {
-                event.target.closest('form').submit(); // Submit the form if confirmed
+            if (!confirm(`Are you sure you want to remove ${userName}?`)) {
+                event.preventDefault(); // Prevent form submission if not confirmed
             }
         }
     </script>
@@ -73,6 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="content" style="margin-top: 70px;">
     <h2>Remove Users</h2>
+    <?php if (isset($_SESSION['message'])): ?>
+        <p style="color: red;"><?= htmlspecialchars($_SESSION['message']) ?></p>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -96,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php else: ?>
                         <form method="post" style="display:inline;">
                             <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['id']) ?>">
-                            <button type="submit" name="action" value="remove" class="btn btn-success btn-sm"
+                            <button type="submit" name="action" value="remove" class="btn btn-danger btn-sm"
                                 onclick="confirmRemoval(event, '<?= htmlspecialchars($user['name']) ?>')">
                                 Remove
                             </button>

@@ -13,14 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate if passwords match
     if ($password === $confirm_password) {
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        // Check if email already exists
+        $emailCheckStmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $emailCheckStmt->execute([$email]);
 
-        $stmt = $pdo->prepare("INSERT INTO users (name, emp_no, address, email, mobile, password, role, status) 
-                               VALUES (?, ?, ?, ?, ?, ?, 'user', 'pending')");
-        if ($stmt->execute([$name, $emp_no, $address, $email, $mobile, $hashed_password])) {
-            $message = "Registration successful! Wait for admin approval.";
+        if ($emailCheckStmt->fetch()) {
+            $message = "This email is already in use!";
         } else {
-            $message = "Registration failed!";
+            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+            $stmt = $pdo->prepare("INSERT INTO users (name, emp_no, address, email, mobile, password, role, status) 
+                                   VALUES (?, ?, ?, ?, ?, ?, 'user', 'pending')");
+            if ($stmt->execute([$name, $emp_no, $address, $email, $mobile, $hashed_password])) {
+                $message = "Registration successful! Wait for admin approval.";
+            } else {
+                $message = "Registration failed!";
+            }
         }
     } else {
         $message = "Passwords do not match!";
@@ -57,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Sign Up</button>
             <br>
             <br>
-            <a href="login.php">login</a>
+            <a href="login.php">Login</a>
         </form>
     </div>
 </body>
